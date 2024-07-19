@@ -115,12 +115,7 @@ function init() {
         const directionalLightIntensity = parseFloat(document.getElementById('directionalLightIntensity').value);
         directionalLight.intensity = directionalLightIntensity;
     });
-    if (window.innerWidth < 768) {
-        // Установить более компактные настройки для мобильных устройств
-        document.querySelectorAll('.control-panel').forEach(panel => {
-            panel.style.maxHeight = '30vh';
-        });
-    }
+
     document.getElementById('rotationType').addEventListener('change', updateRotationInputs);
 
     // Слайдери для керування положенням літака
@@ -698,13 +693,6 @@ function saveImage() {
     link.download = 'scene.png';
     link.click();
 }
-window.addEventListener('resize', () => {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    camera.aspect = width / height;
-    camera.updateProjectionMatrix();
-    renderer.setSize(width, height);
-});
 
 document.getElementById('helpButton').addEventListener('click', () => {
     introJs().setOptions({
