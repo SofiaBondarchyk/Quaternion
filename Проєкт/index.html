@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>3D Object Rotation Calculator</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/4.0.0/introjs.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/FBXLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/4.0.0/intro.min.js"></script>
+</head>
+<body>
+    <div id="canvas-container"></div>
+    <div id="object-controls" class="control-panel">
+        <button id="helpButton" class="styled-button">Help</button>
+        <h3>Object Properties</h3>
+        <label for="objectType">Type:</label>
+        <select id="objectType" class="styled-select">
+            <option value="cube">Cube</option>
+            <option value="cone">Cone</option>
+            <option value="sphere">Sphere</option>
+            <option value="plane">Plane</option>
+            <option value="torus">Torus</option>
+            <option value="cylinder">Cylinder</option>
+        </select>
+        
+        <label for="materialType">Material:</label>
+        <select id="materialType" class="styled-select">
+            <option value="standard">Standard</option>
+            <option value="phong">Phong</option>
+            <option value="lambert">Lambert</option>
+        </select>
+        <label for="colorPicker">Color:</label>
+        <input type="color" id="colorPicker" class="styled-input">
+        <label for="size">Size:</label>
+        <input type="number" id="size" value="1" step="0.1" class="styled-input">
+        <button id="createObject" class="styled-button">Create Object</button>
+        <button id="resetObject" class="styled-button">Reset Object</button>
+        <h3>Import/Export Models</h3>
+<div class="file-upload">
+    <label for="importModel" class="styled-button">Іmport Model</label>
+    <input type="file" id="importModel" accept=".stl, .obj, .fbx, .gltf, .glb" style="display: none;">
+</div>
+</br>
+        <div class="control-block">
+            
+            <h3>Trajectory Settings</h3>
+            <label for="trajectoryType">Type:</label>
+            <select id="trajectoryType" class="styled-select">
+                <option value="line">Line</option>
+                <option value="curve">Curve</option>
+            </select>
+            <label for="trajectoryDuration">Duration (ms):</label>
+            <input type="number" id="trajectoryDuration" value="5000" step="100" class="styled-input">
+        </div>
+        <button id="animateTrajectory" class="styled-button">Animate Trajectory</button>
+        <div class="control-block">
+            <h3>Scene Settings</h3>
+            <label for="sceneColor">Background Color:</label>
+            <input type="color" id="sceneColor" class="styled-input">
+            <button id="applySceneColor" class="styled-button">Apply Scene Color</button>
+        </div>
+        <div class="control-block">
+            <h3>Lighting Settings</h3>
+            <label for="ambientLightColor">Ambient Light Color:</label>
+            <input type="color" id="ambientLightColor" value="#404040" class="styled-input">
+            <label for="ambientLightIntensity">Ambient Light Intensity:</label>
+            <input type="range" id="ambientLightIntensity" min="0" max="2" step="0.1" value="1" class="styled-input">
+            <label for="directionalLightColor">Directional Light Color:</label>
+            <input type="color" id="directionalLightColor" value="#ffffff" class="styled-input">
+            <label for="directionalLightIntensity">Directional Light Intensity:</label>
+            <input type="range" id="directionalLightIntensity" min="0" max="2" step="0.1" value="1" class="styled-input">
+        </div>
+        <div class="control-block">
+            <h3>Rotation Speed</h3>
+            <div id="rotationSpeed"></div>
+        </div>
+        <button id="saveConfig" class="styled-button">Save Configuration</button>
+        <button id="loadConfig" class="styled-button">Load Configuration</button>
+        <button id="saveImage" class="styled-button">Save Image</button>
+       
+    </div>
+    <div id="rotation-controls" class="control-panel">
+        <div class="control-block">
+            <h3>Rotation Settings</h3>
+            <label for="rotationType">Type:</label>
+            <select id="rotationType" class="styled-select">
+                <option value="quaternion">Quaternion</option>
+                <option value="euler">Euler Angles</option>
+                <option value="matrix">Rotation Matrix</option>
+            </select>
+            <div id="rotationInputs">
+                <div id="quaternionInputs" class="rotation-inputs">
+                    <label for="qx">qx:</label><input type="number" id="qx" value="0" class="styled-input"><br>
+                    <label for="qy">qy:</label><input type="number" id="qy" value="0" class="styled-input"><br>
+                    <label for="qz">qz:</label><input type="number" id="qz" value="0" class="styled-input"><br>
+                    <label for="qw">qw:</label><input type="number" id="qw" value="1" class="styled-input"><br>
+                    <label for="normalizeQuaternion">Normalize Quaternion:</label><input type="checkbox" id="normalizeQuaternion" checked class="styled-input">
+                </div>
+                <div id="eulerInputs" class="rotation-inputs">
+                    <label for="ex">x (deg):</label><input type="number" id="ex" value="0" class="styled-input"><br>
+                    <label for="ey">y (deg):</label><input type="number" id="ey" value="0" class="styled-input"><br>
+                    <label for="ez">z (deg):</label><input type="number" id="ez" value="0" class="styled-input"><br>
+                    <button id="demonstrateGimbalLock" class="styled-button">Demonstrate Gimbal Lock</button>
+                </div>
+                <div id="matrixInputs" class="rotation-inputs">
+                    <table class="matrix-table">
+                        <tr>
+                            <td><input type="number" id="m11" value="1" class="matrix-input"></td>
+                            <td><input type="number" id="m12" value="0" class="matrix-input"></td>
+                            <td><input type="number" id="m13" value="0" class="matrix-input"></td>
+                        </tr>
+                        <tr>
+                            <td><input type="number" id="m21" value="0" class="matrix-input"></td>
+                            <td><input type="number" id="m22" value="1" class="matrix-input"></td>
+                            <td><input type="number" id="m23" value="0" class="matrix-input"></td>
+                        </tr>
+                        <tr>
+                            <td><input type="number" id="m31" value="0" class="matrix-input"></td>
+                            <td><input type="number" id="m32" value="0" class="matrix-input"></td>
+                            <td><input type="number" id="m33" value="1" class="matrix-input"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <button id="applyRotation" class="styled-button">Apply Rotation</button>
+        </div>
+      
+        <div class="control-block">
+            <h3>Control Mode</h3>
+            <label for="controlMode">Mode:</label>
+            <select id="controlMode" class="styled-select">
+                <option value="rotateObject">Rotate Object</option>
+                <option value="rotateScene">Rotate Scene</option>
+            </select>
+        </div>
+        <div class="control-block">
+            <h3>Mouse Rotation Mode</h3>
+            <label for="rotationMode">Mode:</label>
+            <select id="rotationMode" class="styled-select">
+                <option value="object">Rotate Object</option>
+                <option value="scene">Rotate Scene</option>
+            </select>
+        </div>
+        <div class="control-block">
+            <h3>Position</h3>
+            <label for="positionX">X:</label><input type="range" id="positionX" min="-10" max="10" step="0.1" value="0" class="styled-input">
+            <label for="positionY">Y:</label><input type="range" id="positionY" min="-10" max="10" step="0.1" value="0" class="styled-input">
+            <label for="positionZ">Z:</label><input type="range" id="positionZ" min="-10" max="10" step="0.1" value="0" class="styled-input">
+        </div>
+        
+    </div>
+    <div id="rotation-display" class="control-panel">
+        <div class="control-block">
+            <h3>Current Rotation</h3>
+            <div id="rotationValues"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

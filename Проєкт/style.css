@@ -1,0 +1,320 @@
+body { 
+    margin: 0; 
+    font-family: Arial, sans-serif;
+    background: #2c3e50; /* Темно-синій фон */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden; /* Вимкнути прокрутку сторінки */
+}
+
+#canvas-container {
+    flex: 1;
+    width: 70%;
+    height: 100%;
+    background: #34495e; /* Темно-сірий фон */
+    border-radius: 10px; /* Заокруглені краї */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Тінь */
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+}
+
+.control-panel {
+    background: rgba(52, 73, 94, 0.95); /* Темно-синій напівпрозорий */
+    padding: 15px;
+    border-radius: 12px;
+    width: 250px; /* Потрібний розмір */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Тінь */
+    color: white;
+    margin: 5px; /* Додає простір між панелями */
+    overflow: auto;
+    max-height: 90vh;
+    position: absolute;
+}
+
+#object-controls {
+    top: 10px;
+    left: 10px;
+}
+
+#rotation-controls {
+    top: 10px;
+    right: 10px;
+}
+
+#scene-controls {
+    bottom: 10px;
+    left: 10px;
+}
+
+#position-controls {
+    bottom: 10px;
+    right: 10px;
+}
+
+#rotation-display {
+    top: 80%;
+    left: 300px;
+    transform: translateY(-50%);
+}
+
+.control-block {
+    margin-bottom: 10px;
+}
+
+.control-block h3 {
+    margin-top: 0;
+    font-size: 16px;
+    border-bottom: 2px solid #ecf0f1; /* Нижня лінія */
+    padding-bottom: 5px;
+}
+
+.styled-button {
+    padding: 8px;
+    background: #3498db; /* Блакитний */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease; /* Анімація */
+    font-size: 12px;
+    margin: 3px 0;
+}
+
+.styled-button:hover {
+    background: #2980b9; /* Темно-блакитний */
+    transform: translateY(-2px); /* Зміщення кнопки при наведенні */
+}
+
+.styled-button:active {
+    background: #1a6fa5; /* Темніший блакитний при натисканні */
+    transform: translateY(0); /* Повернення до початкового положення при натисканні */
+}
+
+.styled-select, .styled-input {
+    display: block;
+    margin: 5px 0; /* Зменшена відстань */
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ecf0f1; /* Біла рамка */
+    border-radius: 5px; /* Заокруглені краї */
+    background: transparent;
+    color: #ecf0f1; /* Колір тексту */
+    font-size: 12px;
+    box-shadow: inset 0 1px 3px rgba(248, 247, 247, 0.1); /* Внутрішня тінь */
+}
+
+#controls input[type="range"] {
+    background: #576b70; /* Білий фон для слайдера */
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+#controls input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    background: #1a7bbc; /* Блакитний повзунок */
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#rotationValues, #rotationSpeed {
+    margin-top: 8px;
+    font-size: 12px;
+    background: #34495e; /* Темний фон */
+    padding: 8px;
+    border-radius: 4px;
+    color: #6db4c6;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Додатковий стиль для опцій випадаючих списків */
+select.styled-select option {
+    background: #2c3e50; /* Темний фон */
+    color: #ecf0f1; /* Світлий текст */
+}
+
+/* Стиль для слайдерів */
+.styled-input[type="range"] {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+}
+
+.styled-input[type="range"]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 6px;
+    background: #ecf0f1; /* Білий фон для слайдера */
+    border-radius: 5px; /* Заокруглені краї */
+}
+
+.styled-input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    background: #1a7bbc; /* Блакитний повзунок */
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-top: -3px; /* Вирівнювання повзунка по центру доріжки */
+}
+
+.styled-input[type="range"]::-moz-range-track {
+    width: 100%;
+    height: 6px;
+    background: #ecf0f1; /* Білий фон для слайдера */
+    border-radius: 5px; /* Заокруглені краї */
+}
+
+.styled-input[type="range"]::-moz-range-thumb {
+    background: #1a7bbc; /* Блакитний повзунок */
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* Стиль для прихованих елементів обертання */
+.rotation-inputs {
+    display: none;
+}
+
+#rotationValues, #rotationSpeed {
+    margin-top: 8px;
+    font-size: 12px;
+    background: #34495e; /* Темний фон */
+    padding: 8px;
+    border-radius: 4px;
+    color: #6db4c6; /* Колір тексту */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Внутрішня тінь */
+}
+
+/* Стиль для матриці */
+.matrix-inputs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+}
+
+.matrix-inputs label {
+    text-align: center;
+    color: #ecf0f1; /* Світлий текст */
+}
+
+.matrix-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+}
+
+.matrix-table td {
+    padding: 5px;
+}
+
+.matrix-input {
+    width: 100%;
+    padding: 5px;
+    text-align: center;
+    border: 1px solid #ecf0f1; /* Біла рамка */
+    border-radius: 5px; /* Заокруглені краї */
+    background: transparent;
+    color: #ecf0f1; /* Колір тексту */
+    font-size: 12px;
+    box-shadow: inset 0 1px 3px rgba(248, 247, 247, 0.1); /* Внутрішня тінь */
+}
+
+#file-input {
+    display: none;
+}
+
+#file-input-label {
+    display: block;
+    padding: 8px;
+    background: #3498db; /* Блакитний */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease; /* Анімація */
+    font-size: 12px;
+    margin: 3px 0;
+    text-align: center;
+}
+
+#file-input-label:hover {
+    background: #2980b9; /* Темно-блакитний */
+    transform: translateY(-2px); /* Зміщення кнопки при наведенні */
+}
+
+#file-input-label:active {
+    background: #1a6fa5; /* Темніший блакитний при натисканні */
+    transform: translateY(0); /* Повернення до початкового положення при натисканні */
+}
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #2c3e50;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#canvas-container {
+    width: 90%;
+    height: 60vh;
+    background: #34495e;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    margin: 10px 0;
+}
+
+.control-panel {
+    background: rgba(52, 73, 94, 0.95);
+    padding: 10px;
+    border-radius: 12px;
+    width: 90%;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    color: white;
+    margin: 5px 0;
+    overflow: auto;
+    max-height: 40vh;
+    position: relative;
+}
+
+.styled-button, .styled-select, .styled-input {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    #canvas-container {
+        width: 70%;
+        height: 70vh;
+    }
+    .control-panel {
+        width: 250px;
+        max-height: 90vh;
+    }
+}
+
+@media (min-width: 1024px) {
+    body {
+        flex-direction: row;
+    }
+    #canvas-container {
+        flex: 1;
+        height: 100%;
+    }
+    .control-panel {
+        width: 300px;
+        margin: 10px;
+    }
+}
+
